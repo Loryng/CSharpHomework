@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace ordertest
 {
@@ -109,6 +111,29 @@ namespace ordertest
             else
             {
                 throw new Exception($"订单{orderId}不存在！");
+            }
+        }
+
+        public void Export()
+        {
+            List<Order> orders = new List<Order>();
+            foreach(Order order in orderDict.Values)
+            {
+                orders.Add(order);
+            }
+            XmlSerializer xml = new XmlSerializer(typeof(List<Order>));
+            using (FileStream fs = new FileStream("fs.xlm", FileMode.Create))
+            {
+                xml.Serialize(fs, orders);
+            }
+        }
+
+        public void Import()
+        {
+            XmlSerializer xml = new XmlSerializer(typeof(List<Order>));
+            using (FileStream fs = new FileStream("fs.xml", FileMode.Open))
+            {
+                List<Order> or = (List<Order>)xml.Deserialize(fs);
             }
         }
     }
